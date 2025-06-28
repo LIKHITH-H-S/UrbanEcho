@@ -1,38 +1,43 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import './Navbar.css';
 
-export default function Navbar() {
-  const activeStyle = {
-    fontWeight: 'bold',
-    color: '#007bff',
-    textDecoration: 'underline',
+const activeStyle = {
+  color: '#00c4cc',
+  fontWeight: 'bold',
+  textDecoration: 'underline',
+};
+
+const Navbar = () => {
+  const token = localStorage.getItem('token');
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/auth');
   };
 
   return (
-    <nav 
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '2rem',
-        padding: '1rem',
-        backgroundColor: '#f8f9fa',
-        borderBottom: '1px solid #ddd',
-        fontFamily: 'Arial, sans-serif'
-      }}
-    >
-      <NavLink 
-        to="/problems" 
-        style={({ isActive }) => (isActive ? activeStyle : { color: '#555', textDecoration: 'none' })}
-      >
-        Problem List
-      </NavLink>
-
-      <NavLink 
-        to="/report" 
-        style={({ isActive }) => (isActive ? activeStyle : { color: '#555', textDecoration: 'none' })}
-      >
-        Report a Problem
-      </NavLink>
-    </nav>
+    token && (
+      <nav className="navbar">
+        <div className="nav-center">
+          <NavLink to="/" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
+            Home
+          </NavLink>
+          <NavLink to="/problems" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
+            Problem List
+          </NavLink>
+          <NavLink to="/report" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
+            Report a Problem
+          </NavLink>
+          <NavLink to="/about" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
+            About
+          </NavLink>
+        </div>
+        <button className="logout-btn" onClick={handleLogout}>Logout</button>
+      </nav>
+    )
   );
-}
+};
+
+export default Navbar;

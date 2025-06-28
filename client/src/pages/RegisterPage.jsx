@@ -1,53 +1,47 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { register } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {
-  const [formData, setFormData] = useState({ username: '', email: '', password: '' });
+  const [form, setForm] = useState({ username: '', password: '' });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/auth/register', formData);
-      navigate('/login');
+      await register(form);
+      navigate('/login'); // Redirect to login after registration
     } catch (err) {
-      console.error('Registration failed:', err.response?.data?.msg || err.message);
+      setError(err.response?.data?.error || 'Registration failed');
     }
   };
 
-  return (
+ return (
     <div>
       <h2>Register</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
           name="username"
           placeholder="Username"
-          value={formData.username}
+          value={form.username}
           onChange={handleChange}
           required
-        /><br/>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        /><br/>
+        />
         <input
           type="password"
           name="password"
           placeholder="Password"
-          value={formData.password}
+          value={form.password}
           onChange={handleChange}
           required
-        /><br/>
+        />
         <button type="submit">Register</button>
       </form>
     </div>

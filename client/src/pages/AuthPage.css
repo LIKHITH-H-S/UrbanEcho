@@ -1,0 +1,117 @@
+.auth-page {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  background: linear-gradient(135deg, #e6f0ff, #ffffff);
+  position: relative;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+.auth-brand {
+  position: absolute;
+  top: 10px;
+  left: 30px;
+  font-size: 32px;
+  font-weight: bold;
+  z-index: 10;
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
+.form-section,
+.info-section {
+  flex: 1;
+  padding: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-section {
+  background-color: #fff;
+}
+
+.form-section h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+  margin-top: 100px; 
+  color: #333;
+}
+
+.form-section form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-section input {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+.form-section button {
+  background-color: #00b386;
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-section button:hover {
+  background-color: #009973;
+}
+
+.error-msg {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+.info-section {
+  background: linear-gradient(135deg, #00b386, #3cb4c8);
+  color: white;
+  align-items: center;
+  text-align: center;
+}
+
+.info-section h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+.info-section p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.info-section button {
+  background-color: white;
+  color: #00b386;
+  border: none;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.info-section button:hover {
+  background-color: #e0f9f4;
+}

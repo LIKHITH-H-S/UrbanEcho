@@ -1,53 +1,45 @@
 // server.js
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
-const problemRoutes = require('./routes/problemRoutes');
+const mongoose = require('mongoose');
+const morgan = require('morgan');
 const app = express();
+const authRoutes = require('./routes/authRoutes');
+const problemRoutes = require('./routes/problemRoutes');
 app.use(cors());
 app.use(express.json());
-const morgan = require('morgan');
 app.use(morgan('dev'));
+app.use('/api/auth', authRoutes);
+app.use('/problems', require('./routes/problemRoutes'));
 
-const Report = require('./models/Report'); //
-// Sample route
-app.get('/', (req, res) => {
-  res.send('UrbanEcho API Running');
-});
-app.use('/problems', problemRoutes);
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/UrbanEcho', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect('mongodb://localhost:27017/urbanecho', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
 .then(() => console.log('MongoDB Connected'))
 .catch((err) => console.error('Mongo Error:', err));
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something went wrong!' });
 });
-const authRoutes = require('./routes/authRoutes');
-app.use('/api/auth', authRoutes);
 
+app.use('/api', authRoutes);
+// Server setup
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-
-
-
-
-const reportRoutes = require('./routes/reportRoutes');
-app.use('/api/reports', reportRoutes);
-
-
+// Graceful shutdown
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception:', err);
-  process.exit(1); // Optional: exit gracefully
+  process.exit(1);
 });
-
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  process.exit(1); // Optional: exit gracefully
+  process.exit(1);
 });
 process.on('SIGINT', () => {
   console.log('Shutting down server...');
