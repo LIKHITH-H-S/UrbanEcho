@@ -8,6 +8,7 @@ const ProblemList = () => {
   const [error, setError] = useState('');
 
 const loadProblems = async () => {
+    setError('');
     try {
       const res = await fetchProblems();
       // Sort problems by highest votes first
@@ -15,6 +16,7 @@ const loadProblems = async () => {
       setProblems(sorted);
     } catch (err) {
       console.error('Failed to fetch problems:', err);
+      setError('Failed to fetch problems. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -25,6 +27,7 @@ const loadProblems = async () => {
       loadProblems(); // Refresh the list after upvote
     } catch (err) {
       console.error('Upvote failed:', err.response?.data?.error || err.message);
+      setError(err.response?.data?.error || 'Upvote failed');
       alert(err.response?.data?.error || 'Upvote failed');
     }
   };

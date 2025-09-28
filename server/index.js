@@ -13,10 +13,8 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/problems', require('./routes/problemRoutes'));
 
-mongoose.connect('mongodb://localhost:27017/urbanecho', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/urbanecho';
+mongoose.connect(MONGO_URI)
 .then(() => console.log('MongoDB Connected'))
 .catch((err) => console.error('Mongo Error:', err));
 

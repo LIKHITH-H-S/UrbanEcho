@@ -28,8 +28,17 @@ export const register = async (userData) => {
 };
 
 export const login = async (credentials) => {
-  const response = await api.post('/api/auth/login', credentials);
-  return response.data;
+  try {
+    const response = await axios.post('http://localhost:5000/api/auth/login', credentials, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return response;
+  } catch (error) {
+    console.error('Login API Error:', error);
+    throw error;
+  }
 };
 // Fetch single report by id
 export const fetchReportById = async (reportId) => {

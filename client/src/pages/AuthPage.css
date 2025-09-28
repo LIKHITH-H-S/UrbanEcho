@@ -5,12 +5,15 @@
   width: 100vw;
   height: 100vh;
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #e6f0ff, #ffffff);
   position: relative;
   font-family: 'Segoe UI', sans-serif;
   overflow: hidden;
+  background: #f8f9fa;
+  padding: 2rem;
+  min-height: 100vh;
 }
 
 .auth-brand {
@@ -27,6 +30,9 @@
   flex-direction: row;
   width: 100%;
   height: 100%;
+  position: relative;
+  z-index: 1; /* sit above animated background */
+  max-width: 420px;
 }
 
 .form-section,
@@ -42,6 +48,118 @@
   background-color: #fff;
 }
 
+.auth-card {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem;
+  display: flex;              /* center inner controls like role toggle */
+  flex-direction: column;
+  align-items: center;
+}
+
+.tabs {
+  display: inline-flex;
+  background: #f5f7fa;
+  border-radius: 999px;
+  padding: 0.35rem;
+  margin: 0 auto 1rem;
+}
+.tab {
+  background: transparent;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+}
+.tab.active {
+  background: #ffffff;
+  color: #00b386;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.auth-title {
+  text-align: center;
+  margin-top: 1rem;
+}
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+  color: #333;
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.form-footer {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+}
+.form-footer .linklike {
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  padding: 0;
+}
+.form-footer .helper {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.role-toggle {
+  display: inline-flex;
+  gap: 0.5rem;
+  background: #f5f7fa;
+  padding: 0.35rem;
+  border-radius: 999px;
+  align-self: center;
+  margin: 1rem auto 0.75rem;  /* center horizontally with margin auto */
+}
+.role-btn {
+  background: transparent !important; /* prevent global button bg */
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+}
+.role-btn:hover {
+  background: #eef7f3; /* light mint hover */
+  color: #00a77a;
+}
+.role-btn.active {
+  background: #ffffff;
+  color: #00b386;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.tabs .tab {
+  background: transparent !important; /* prevent global button bg */
+}
+.tabs .tab:hover {
+  background: #f1f5f9; /* subtle light gray-blue */
+  color: #0f766e;      /* teal text */
+}
+.tabs .tab.active:hover {
+  background: #ffffff; /* keep active clean on hover */
+  color: #00b386;
+}
+
 .form-section h2 {
   font-size: 1.6rem;
   margin-bottom: 1.5rem;
@@ -52,6 +170,7 @@
 .form-section form {
   display: flex;
   flex-direction: column;
+  width: 100%;                /* ensure inputs fill card width */
 }
 
 .form-section input {
@@ -61,8 +180,91 @@
   border: 1px solid #ccc;
   border-radius: 10px;
 }
+.form-section input:focus {
+  outline: none;            /* remove blue outline */
+  box-shadow: none;         /* remove glow */
+  border-color: #aaa;       /* neutral focus border */
+}
 
-.form-section button {
+/* Password input with toggle */
+.password-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.password-row input {
+  width: 100%;
+  padding-right: 4.5rem; /* room for toggle */
+}
+.toggle-password {
+  position: absolute;
+  right: 8px;
+  top: 50%;                 /* center vertically */
+  transform: translateY(-50%);
+  background: transparent; /* no background */
+  border: none;            /* no border */
+  color: #333;             /* plain neutral icon color */
+  cursor: pointer;
+  padding: 0;              /* no pill padding */
+  border-radius: 0;        /* no rounded bg */
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent; /* remove mobile tap highlight */
+}
+.toggle-password:hover { background: transparent; color: #333; }
+.toggle-password:focus { outline: none; }
+.toggle-password:focus-visible { outline: 2px solid #bbb; outline-offset: 2px; }
+.toggle-password svg { display: block; }
+
+/* Neutralize WebKit autofill background that can show near the toggle */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: inherit;
+  transition: background-color 9999s ease-in-out 0s;
+  box-shadow: 0 0 0px 1000px #fff inset; /* force white bg */
+}
+
+/* Submit button disabled (loading) */
+.form-section button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Password strength meter (register only) */
+.strength {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.25rem 0 0.75rem 0;
+}
+.strength .bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+.strength .bar::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 0%;
+  background: #ef4444; /* default weak */
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+.strength .bar-0::after { width: 15%; background: #ef4444; }
+.strength .bar-1::after { width: 35%; background: #f59e0b; }
+.strength .bar-2::after { width: 60%; background: #f59e0b; }
+.strength .bar-3::after { width: 85%; background: #10b981; }
+.strength .bar-4::after { width: 100%; background: #10b981; }
+.strength .label {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.form-section button[type="submit"] {
   background-color: #00b386;
   color: white;
   border: none;
@@ -73,8 +275,18 @@
   transition: background-color 0.3s ease;
 }
 
-.form-section button:hover {
+.form-section button[type="submit"]:hover {
   background-color: #009973;
+}
+
+/* Stronger override so the eye icon never inherits submit button styles */
+.form-section .password-row .toggle-password {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  color: #333;
 }
 
 .error-msg {
@@ -114,4 +326,96 @@
 
 .info-section button:hover {
   background-color: #e0f9f4;
+}
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #444;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.password-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.forgot-password {
+  color: #00b386;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-color: #00b386;
+  box-shadow: 0 0 0 3px rgba(0, 179, 134, 0.1);
+}
+
+.auth-button {
+  width: 100%;
+  padding: 0.9rem;
+  background: #00b386;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.5rem;
+}
+
+.auth-button:hover {
+  background: #008c6a;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.auth-footer a {
+  color: #00b386;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem;
+  }
+  
+  .auth-header h2 {
+    font-size: 1.5rem;
+  }
 }

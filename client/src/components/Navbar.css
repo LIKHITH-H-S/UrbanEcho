@@ -11,7 +11,7 @@
   z-index: 1000;
   font-family: 'Segoe UI', sans-serif;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible; /* allow logo scale without increasing navbar height */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -20,6 +20,14 @@
   font-size: 1.8rem;
   font-weight: bold;
   white-space: nowrap;
+}
+
+/* Size the logo image */
+.logo img {
+  height: 44px;           /* base layout height */
+  display: block;
+  transform: scale(1.8);  /* visually larger without affecting layout height */
+  transform-origin: left center;
 }
 
 .nav-links {
@@ -45,8 +53,6 @@
 }
 
 .logout-btn {
-  position: absolute;
-  right: 1rem;
   background: none;
   border: none;
   font-size: 1rem;
@@ -64,8 +70,81 @@
 }
 .nav-center {
   display: flex;
-  gap: 2.5rem;
+  flex: 1;                /* take remaining space */
+  justify-content: center; /* center links group */
+}
+
+/* Ensure visible spacing between nav items */
+.nav-center .nav-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0; /* vertical rhythm */
+}
+.nav-center .nav-item + .nav-item {
+  margin-left: 1.5rem; /* fallback spacing in addition to gap */
 }
 .logout-btn:hover {
   color: #00c4cc;
+}
+
+/* Profile avatar and dropdown */
+.profile {
+  position: relative;
+  margin-left: auto; /* keep at far right */
+}
+
+.avatar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease;
+}
+.avatar-btn:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+/* Make sure the SVG icon reads as a profile glyph */
+.avatar-icon {
+  width: 22px;
+  height: 22px;
+  color: #555; /* currentColor used by strokes/fills in SVG */
+}
+
+.profile-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  padding: 6px;
+  z-index: 1100;
+}
+
+.menu-item {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #333;
+}
+.menu-item:hover {
+  background: #f5f7fa;
+}
+.menu-item.danger {
+  color: #c0392b;
+}
+.menu-item.danger:hover {
+  background: #fdecea;
 }
