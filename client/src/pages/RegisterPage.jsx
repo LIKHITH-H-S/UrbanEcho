@@ -1,49 +1,128 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { register } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
+import './AuthPage.css';
 
 const RegisterPage = () => {
-  const [form, setForm] = useState({ username: '', password: '' });
+  const [userType, setUserType] = useState('volunteer'); // 'volunteer' or 'ngo'
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    confirmPassword: ''
+  });
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
     try {
-      await register(form);
+      await register({
+        username: formData.username,
+        password: formData.password,
+        userType: userType
+      });
       navigate('/login'); // Redirect to login after registration
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed');
+      console.error('Registration error:', err);
+      setError(err.response?.data?.message || err.message || 'Registration failed. Please try again.');
     }
   };
 
- return (
-    <div>
-      <h2>Register</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Register</button>
-      </form>
+  return (
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-header">
+            <h2>Create Account</h2>
+            <p>Join UrbanEcho and start making a difference</p>
+          </div>
+
+          <div className="user-type-toggle">
+            <div className="toggle-container">
+              <button
+                type="button"
+                className={`toggle-btn ${userType === 'volunteer' ? 'active' : ''}`}
+                onClick={() => setUserType('volunteer')}
+              >
+                Volunteer
+              </button>
+              <button
+                type="button"
+                className={`toggle-btn ${userType === 'ngo' ? 'active' : ''}`}
+                onClick={() => setUserType('ngo')}
+              >
+                NGO
+              </button>
+            </div>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div className="form-group">
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Choose a username"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Create a password"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm your password"
+                required
+              />
+            </div>
+
+            {error && <div className="error-message">{error}</div>}
+
+            <button type="submit" className="auth-button">
+              Create {userType === 'volunteer' ? 'Volunteer' : 'NGO'} Account
+            </button>
+          </form>
+
+          <div className="auth-footer">
+            <p>Already have an account? <Link to="/login">Sign in</Link></p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,0 +1,63 @@
+/* LoginPage.css - Styles for Login Page with User Type Toggle */
+
+.user-type-toggle {
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.toggle-container {
+  display: flex;
+  background: #f0f0f0;
+  border-radius: 25px;
+  padding: 4px;
+  gap: 2px;
+  justify-content: center;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 120px;
+}
+
+.toggle-btn.active {
+  background: linear-gradient(135deg, #00b386, #008c6a);
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 182, 134, 0.3);
+}
+
+.toggle-btn:hover:not(.active) {
+  background: #e8e8e8;
+}
+
+.toggle-btn.active:hover {
+  background: linear-gradient(135deg, #009977, #007a5f);
+}
+
+/* Error message styling */
+.error-message {
+  background: #fee;
+  color: #c33;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border: 1px solid #fcc;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Make sure the form styling works well with the toggle */
+.auth-form {
+  padding-top: 1rem;
+}

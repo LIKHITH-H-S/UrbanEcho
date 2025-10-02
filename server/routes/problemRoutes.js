@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
   try {
     const problems = await Problem.find()
       .sort({ createdAt: -1 })
-      .populate('reporter', 'username');
+      .populate('reporter', 'username userType');
       console.log('Fetched problems:', problems);
     res.json(problems);
   } catch (error) {
@@ -52,7 +52,7 @@ router.post('/:id/upvote', verifyToken, async (req, res) => {
     }
 
     problem.upvotes.push(userId);
-    problem.votesCount = problem.upvotes.length; 
+    problem.votesCount = problem.upvotes.length;
 
     await problem.save();
     res.json({ message: 'Upvoted successfully', votesCount: problem.votesCount });

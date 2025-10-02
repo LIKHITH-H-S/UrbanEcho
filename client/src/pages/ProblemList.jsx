@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchProblems, upvoteProblem } from '../utils/api';
 import AnimatedBackground from '../components/AnimatedBackground';
+import './ProblemList.css';
 
 const ProblemList = () => {
   const [problems, setProblems] = useState([]);
@@ -36,66 +37,59 @@ const loadProblems = async () => {
     loadProblems();
   }, []);
 
+  if (loading) return (
+    <div className="problemlist-container">
+      <div className="loading-message">Loading problems...</div>
+    </div>
+  );
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+  if (error) return (
+    <div className="problemlist-container">
+      <div className="error-message">{error}</div>
+    </div>
+  );
 
- return (
-    <div style={{ position: 'relative', zIndex: 1 }}>
+  return (
+    <div className="problemlist-container">
       <AnimatedBackground />
-      <div style={{ padding: '2rem' }}>
-        <h2>Problem List</h2>
+      <div className="problemlist-content">
+        <div className="problemlist-header">
+          <h1 className="problemlist-title">Community Problem Reports</h1>
+          <p className="problemlist-subtitle">Help us prioritize issues by voting on the problems that matter most to you</p>
+        </div>
+
         {problems.length === 0 ? (
-          <p>No problems reported yet.</p>
+          <div className="no-problems">
+            <p>No problems reported yet. Be the first to report an issue in your community!</p>
+          </div>
         ) : (
-          <ul style={{ listStyle: 'none', padding: 0 }}>
+          <div className="problems-grid">
             {problems.map(({ _id, title, description, category, location, createdAt, votesCount }) => (
-              <li
-                key={_id}
-                style={{
-                  marginBottom: '1.5rem',
-                  padding: '1rem',
-                  border: '1px solid #ccc',
-                  borderRadius: '8px',
-                  position: 'relative',
-                  backgroundColor: '#fff',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-                }}
-              >
-                {/* Upvote Button */}
-                <button
-  onClick={() => handleUpvote(_id)}
-  style={{
-    position: 'absolute',
-    top: '10px',
-    right: '10px',
-    backgroundColor: '#f0f0f0',
-    border: 'none',
-    borderRadius: '50%',
-    width: '40px',
-    height: '40px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    fontSize: '18px',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.2)'
-  }}
-  title="Upvote"
->
-  👍
-</button>
+              <div key={_id} className="problem-card">
+                <div className="problem-header">
+                  <h3 className="problem-title">{title}</h3>
+                  <div className="problem-location">📍 {location}</div>
+                </div>
 
+                <p className="problem-description">{description}</p>
 
-                <h3 style={{ marginTop: 0 }}>{title}</h3>
-                <p>{description}</p>
-                <p><strong>Category:</strong> {category}</p>
-                <p><strong>Location:</strong> {location}</p>
-                <p><strong>Votes:</strong> {votesCount || 0}</p>
-                <small>Reported on: {new Date(createdAt).toLocaleString()}</small>
-              </li>
+                <div className="problem-footer">
+                  <span className={`problem-status status-${category?.toLowerCase() || 'pending'}`}>
+                    {category || 'Pending'}
+                  </span>
+                  <div className="problem-votes">
+                    <button
+                      className="upvote-btn"
+                      onClick={() => handleUpvote(_id)}
+                      title="Upvote this problem"
+                    >
+                      👍 {votesCount || 0}
+                    </button>
+                  </div>
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>

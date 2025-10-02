@@ -28,35 +28,86 @@ const ReportProblem = () => {
       setSuccess('Problem reported!');
       setTimeout(() => navigate('/problems'), 1000);
     } catch (err) {
-      console.error("Submission Error:", err);
       setError(err.response?.data?.error || 'Failed to report problem');
     }
   };
 
   return (
-    <div style={{ position: 'relative', zIndex: 1 }}>
+    <div className="report-container">
       <AnimatedBackground />
-    <div style={{ padding: '2rem', maxWidth: '600px', margin: '0 auto' }}>
-      <div style={{ position: 'relative', zIndex: 2 }}></div>
-      <h2>Report a Problem</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="title" placeholder="Title" value={form.title} onChange={handleChange} required />
-        <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} rows="4" />
-        <select name="category" value={form.category} onChange={handleChange}>
-  <option value="Waste">Waste</option>
-  <option value="Roa<AnimatedBackground />d">Roads</option>
-  <option value="Water">Water</option>
-  <option value="Electricity">Electricity</option>
-  <option value="Other">Other</option>
-</select>
-        <input type="text" name="location" placeholder="Location" value={form.location} onChange={handleChange} required />
-        <button type="submit">Submit</button>
-      </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
-    </div>
-    </div>
+      <div className="report-content">
+        <div className="report-header">
+          <h1 className="report-title">Report Community Issues</h1>
+          <p className="report-subtitle">Help make your community better by reporting problems that need attention</p>
+        </div>
 
+        <form onSubmit={handleSubmit} className="report-form">
+          <div className="form-group">
+            <label htmlFor="title">Problem Title</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={form.title}
+              onChange={handleChange}
+              placeholder="Brief description of the issue"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="description">Detailed Description</label>
+            <textarea
+              id="description"
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+              placeholder="Provide detailed information about the problem"
+              rows="4"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="category">Category</label>
+            <select
+              id="category"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+            >
+              <option value="">Select a category</option>
+              <option value="Waste">Waste Management</option>
+              <option value="Roads">Roads & Infrastructure</option>
+              <option value="Water">Water & Sanitation</option>
+              <option value="Electricity">Electricity</option>
+              <option value="Safety">Public Safety</option>
+              <option value="Environment">Environment</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="location">Location</label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              value={form.location}
+              onChange={handleChange}
+              placeholder="Street address, landmark, or area"
+              required
+            />
+          </div>
+
+          {error && <div className="error-message">{error}</div>}
+          {success && <div className="success-message">{success}</div>}
+
+          <button type="submit" className="submit-btn">
+            Report This Issue
+          </button>
+        </form>
+      </div>
+    </div>
   );
 };
 

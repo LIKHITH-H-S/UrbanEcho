@@ -11,19 +11,7 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
-app.use('/problems', require('./routes/problemRoutes'));
-
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/urbanecho';
-mongoose.connect(MONGO_URI)
-.then(() => console.log('MongoDB Connected'))
-.catch((err) => console.error('Mongo Error:', err));
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
-
-app.use('/api', authRoutes);
+app.use('/api/problems', problemRoutes);
 // Server setup
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {

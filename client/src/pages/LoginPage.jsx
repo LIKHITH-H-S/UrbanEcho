@@ -1,11 +1,13 @@
 // In src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './AuthPage.css'; // We'll create this next
+import './AuthPage.css';
+import './LoginPage.css'; // Add this import for toggle styles
 import { login } from '../utils/api';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+  const [userType, setUserType] = useState('volunteer'); // 'volunteer' or 'ngo'
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -22,20 +24,24 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
     setError('');
     try {
-      // Call your login API
       const response = await login({
-        email: formData.email,
-        password: formData.password
+        username: formData.username,
+        password: formData.password,
+        userType: userType
       });
-      
+
       // Save the token to localStorage
       localStorage.setItem('token', response.data.token);
-      
-      // Redirect to home/dashboard
-      navigate('/dashboard'); // or whatever your protected route is
+      localStorage.setItem('userType', userType);
+
+      // Redirect based on user type
+      if (userType === 'ngo') {
+        navigate('/problems'); // NGO volunteers go to problem management
+      } else {
+        navigate('/home'); // Regular users go to home
+      }
     } catch (err) {
       console.error('Login error:', err);
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
@@ -50,10 +56,29 @@ const LoginPage = () => {
             <h2>Welcome Back</h2>
             <p>Sign in to continue to UrbanEcho</p>
           </div>
-          
+
+          <div className="user-type-toggle">
+            <div className="toggle-container">
+              <button
+                type="button"
+                className={`toggle-btn ${userType === 'volunteer' ? 'active' : ''}`}
+                onClick={() => setUserType('volunteer')}
+              >
+                Volunteer
+              </button>
+              <button
+                type="button"
+                className={`toggle-btn ${userType === 'ngo' ? 'active' : ''}`}
+                onClick={() => setUserType('ngo')}
+              >
+                NGO
+              </button>
+            </div>
+          </div>
+
           <form onSubmit={handleSubmit} className="auth-form">
             <div className="form-group">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="username">Username</label>
               <input
                 type="text"
                 id="username"
@@ -64,14 +89,9 @@ const LoginPage = () => {
                 required
               />
             </div>
-            
+
             <div className="form-group">
-              <div className="password-header">
-                <label htmlFor="password">Password</label>
-                <Link to="/forgot-password" className="forgot-password">
-                  Forgot Password?
-                </Link>
-              </div>
+              <label htmlFor="password">Password</label>
               <input
                 type="password"
                 id="password"
@@ -82,12 +102,14 @@ const LoginPage = () => {
                 required
               />
             </div>
-            
+
+            {error && <div className="error-message">{error}</div>}
+
             <button type="submit" className="auth-button">
-              Sign In
+              Sign In as {userType === 'volunteer' ? 'Volunteer' : 'NGO'}
             </button>
           </form>
-          
+
           <div className="auth-footer">
             <p>Don't have an account? <Link to="/register">Sign up</Link></p>
           </div>

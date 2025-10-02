@@ -4,18 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: radial-gradient(#00c4cc 1px, transparent 1px);
-  background-size: 35px 35px;
+  background: transparent;
   z-index: 0;
-  animation: moveDots 20s linear infinite;
-  opacity: 0.4;
-}
-
-@keyframes moveDots {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 200px 200px;
-  }
+  opacity: 1;
 }
