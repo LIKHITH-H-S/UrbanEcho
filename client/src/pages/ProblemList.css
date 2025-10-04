@@ -102,8 +102,22 @@
   border-color: rgba(16, 185, 129, 0.3);
 }
 
-.problem-header {
+.problem-image {
+  width: 100%;
   margin-bottom: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.problem-image img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.problem-image:hover img {
+  transform: scale(1.05);
 }
 
 .problem-title {
@@ -112,13 +126,36 @@
   color: rgba(255, 255, 255, 0.95);
   margin-bottom: 0.5rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  line-height: 1.3;
 }
 
 .problem-location {
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.7);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.problem-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: auto;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.problem-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.problem-reporter {
+  font-size: 0.9rem;
+  color: rgba(16, 185, 129, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  font-weight: 500;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -130,13 +167,6 @@
   line-height: 1.6;
   margin-bottom: 1.5rem;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-.problem-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: auto;
 }
 
 .problem-status {
@@ -173,21 +203,49 @@
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  font-size: 0.85rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+  min-width: 80px;
+  justify-content: center;
 }
 
 .upvote-btn:hover {
   background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+
+.upvote-btn:active {
+  transform: translateY(0);
+}
+
+.upvote-btn.voted {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.upvote-btn.voted:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
+.upvote-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+}
+
+.upvote-btn.voted:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3);
 }
 
 .loading-message, .error-message, .no-problems {
@@ -229,8 +287,10 @@
     padding: 1.5rem;
   }
 
-  .problem-title {
-    font-size: 1.2rem;
+  .problem-footer-right {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 }
 
@@ -251,7 +311,13 @@
     font-size: 1rem;
   }
 
-  .problem-card {
-    padding: 1.2rem;
+  .problem-footer-right {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .problem-reporter {
+    font-size: 0.85rem;
   }
 }

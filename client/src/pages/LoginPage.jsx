@@ -35,6 +35,12 @@ const LoginPage = () => {
       // Save the token to localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('userType', userType);
+      localStorage.setItem('username', formData.username);
+
+      // Store user ID if provided in response
+      if (response.data.userId) {
+        localStorage.setItem('userId', response.data.userId);
+      }
 
       // Redirect based on user type
       if (userType === 'ngo') {
@@ -44,7 +50,7 @@ const LoginPage = () => {
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+      setError(err.response?.data?.error || err.response?.data?.message || 'Login failed. Please check your credentials.');
     }
   };
 

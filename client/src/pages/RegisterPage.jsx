@@ -36,6 +36,13 @@ const RegisterPage = () => {
         password: formData.password,
         userType: userType
       });
+
+      // Store registration date and initial activity data
+      const registrationDate = new Date().toISOString();
+      localStorage.setItem('registrationDate', registrationDate);
+      localStorage.setItem('problemsReported', '0');
+      localStorage.setItem('problemsResolved', '0');
+
       navigate('/login'); // Redirect to login after registration
     } catch (err) {
       console.error('Registration error:', err);

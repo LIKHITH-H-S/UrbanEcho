@@ -208,8 +208,13 @@
   color: #10b981;
 }
 
-.menu-item.danger {
-  color: #fca5a5;
+.menu-item.profile {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.menu-item.profile:hover {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
 }
 
 /* Mobile Responsive */

@@ -1,14 +1,16 @@
-/* Beautiful Report Problem Page - Matching Landing Page Design */
-.report-container {
+/* Report Problem Page - Matching ProblemList Design */
+
+/* Container styling to match ProblemList */
+.problemlist-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: relative;
   overflow: hidden;
-  padding-top: 100px;
+  padding-top: 100px; /* Account for navbar */
 }
 
-.report-container::before {
+.problemlist-container::before {
   content: '';
   position: absolute;
   top: 0;
@@ -23,20 +25,20 @@
   z-index: 0;
 }
 
-.report-content {
+.problemlist-content {
   position: relative;
   z-index: 1;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem 2rem;
+  padding: 2rem;
 }
 
-.report-header {
+.problemlist-header {
   text-align: center;
   margin-bottom: 3rem;
 }
 
-.report-title {
+.problemlist-title {
   font-size: 3rem;
   margin-bottom: 1rem;
   background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #e2e8f0 100%);
@@ -49,15 +51,58 @@
   letter-spacing: -0.02em;
 }
 
+.problemlist-subtitle {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-weight: 400;
+}
+
+.report-form-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
 .report-form {
   background: rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
+  border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(20px);
   padding: 3rem;
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  max-width: 600px;
+  width: 100%;
+}
+
+.report-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.report-form:hover::before {
+  opacity: 1;
+}
+
+.report-form:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 .form-group {
@@ -72,7 +117,6 @@
   font-size: 1rem;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
-
 .form-group input,
 .form-group textarea,
 .form-group select {
@@ -84,7 +128,6 @@
   background: rgba(255, 255, 255, 0.05);
   color: white;
   backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
   font-family: inherit;
 }
 
@@ -97,9 +140,42 @@
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+.file-input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.file-input:focus {
+  outline: none;
+  border-color: rgba(16, 185, 129, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.file-input::-webkit-file-upload-button {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 1rem;
+  transition: all 0.3s ease;
+}
+
+.file-input::-webkit-file-upload-button:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
 }
 
 .submit-btn {
@@ -169,37 +245,39 @@
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
-  .report-content {
+  .problemlist-content {
     padding: 2rem 1rem;
   }
 
-  .report-title {
+  .problemlist-title {
     font-size: 2.2rem;
   }
 
-  .report-subtitle {
+  .problemlist-subtitle {
     font-size: 1.1rem;
   }
 
   .report-form {
     padding: 2rem;
+    margin: 0 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .report-container {
+  .problemlist-container {
     padding-top: 80px;
   }
 
-  .report-content {
+  .problemlist-content {
     padding: 1rem;
   }
 
-  .report-title {
+  .problemlist-title {
     font-size: 1.8rem;
   }
 
   .report-form {
     padding: 1.5rem;
+    margin: 0 0.5rem;
   }
 }

@@ -5,8 +5,9 @@ const api = axios.create({
 });
 
 // Fetch all problems
-export const fetchProblems = async () => {
-  const response = await axios.get('http://localhost:5001/problems');
+export const fetchProblems = async (userId = null) => {
+  const params = userId ? `?userId=${userId}` : '';
+  const response = await axios.get(`http://localhost:5001/api/problems${params}`);
   return response.data;
 };
 
@@ -14,12 +15,33 @@ export const fetchProblems = async () => {
 // Create a new problem (requires auth token)
 export const createProblem = async (problemData) => {
   const token = localStorage.getItem('token');
-  const response = await axios.post('http://localhost:5001/problems', problemData, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
+
+  // If there's an image, use FormData for multipart upload
+  if (problemData.image && problemData.image instanceof File) {
+    const formData = new FormData();
+    formData.append('title', problemData.title);
+    formData.append('description', problemData.description || '');
+    formData.append('category', problemData.category);
+    formData.append('location', problemData.location);
+    formData.append('image', problemData.image);
+
+    const response = await axios.post('http://localhost:5001/api/problems', formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      },
+    });
+    return response.data;
+  } else {
+    // Regular JSON request for problems without images
+    const response = await axios.post('http://localhost:5001/api/problems', problemData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+    });
+    return response.data;
+  }
 };
 export const register = async (userData) => {
   try {
@@ -73,7 +95,7 @@ export const fetchReportById = async (reportId) => {
 
 export const upvoteProblem = async (problemId) => {
   const token = localStorage.getItem('token');
-  const response = await axios.post(`http://localhost:5001/problems/${problemId}/upvote`, {}, {
+  const response = await axios.post(`http://localhost:5001/api/problems/${problemId}/upvote`, {}, {
     headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;

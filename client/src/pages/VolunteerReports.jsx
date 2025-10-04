@@ -30,7 +30,7 @@ const VolunteerReports = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/problems', {
+      const response = await fetch('http://localhost:5001/api/problems', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -58,7 +58,7 @@ const VolunteerReports = () => {
   const handleUpvote = async (problemId) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/problems/${problemId}/upvote`, {
+      const response = await fetch(`http://localhost:5001/api/problems/${problemId}/upvote`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

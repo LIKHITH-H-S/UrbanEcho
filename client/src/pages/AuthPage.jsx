@@ -26,8 +26,8 @@ const AuthPage = () => {
       setError('');
       setLoading(true);
       const url = isLogin
-        ? 'http://localhost:5000/api/auth/login'
-        : 'http://localhost:5000/api/auth/register';
+        ? 'http://localhost:5001/api/auth/login'
+        : 'http://localhost:5001/api/auth/register';
 
       const payload = {
         username: form.username,
@@ -41,8 +41,12 @@ const AuthPage = () => {
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('userType', res.data.userType);
         localStorage.setItem('username', res.data.username);
+        // Redirect after successful login
+        window.location.href = '/home';
       } else {
+        // Registration successful - switch to login mode with same credentials
         setIsLogin(true);
+        // Don't clear form - keep the credentials for immediate login
       }
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong');

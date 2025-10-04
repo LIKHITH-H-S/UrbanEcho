@@ -19,6 +19,9 @@ const Navbar = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userType');
     localStorage.removeItem('username');
+    localStorage.removeItem('registrationDate');
+    localStorage.removeItem('problemsReported');
+    localStorage.removeItem('problemsResolved');
     navigate('/');
   };
 
@@ -87,7 +90,7 @@ const Navbar = () => {
             </button>
             {menuOpen && (
               <div className="profile-menu" role="menu" onMouseLeave={() => setMenuOpen(false)}>
-                {/* <button className="menu-item" role="menuitem" onClick={() => { setMenuOpen(false); navigate('/profile'); }}>My Profile</button> */}
+                <button className="menu-item profile" role="menuitem" onClick={() => { setMenuOpen(false); navigate('/profile'); }}>My Profile</button>
                 <button className="menu-item danger" role="menuitem" onClick={() => { setMenuOpen(false); handleLogout(); }}>Logout</button>
               </div>
             )}

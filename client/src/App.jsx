@@ -12,6 +12,7 @@ import About from './pages/About';
 import LandingPage from './pages/LandingPage';
 import VolunteerReports from './pages/VolunteerReports';
 import NGODashboard from './pages/NGODashboard';
+import Profile from './pages/Profile';
 
 function App() {
   const isAuthenticated = () => !!localStorage.getItem('token');
@@ -52,8 +53,8 @@ function App() {
           element={isAuthenticated() && localStorage.getItem('userType') === 'ngo' ? <VolunteerReports /> : <Navigate to="/home" />}
         />
         <Route
-          path="/ngo-dashboard"
-          element={isAuthenticated() && localStorage.getItem('userType') === 'ngo' ? <NGODashboard /> : <Navigate to="/home" />}
+          path="/profile"
+          element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />}
         />
       </Routes>
     </>

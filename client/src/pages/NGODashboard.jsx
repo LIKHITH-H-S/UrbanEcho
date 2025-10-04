@@ -38,7 +38,7 @@ const NGODashboard = () => {
       const token = localStorage.getItem('token');
 
       // Fetch problems
-      const problemsResponse = await fetch('http://localhost:5000/api/problems', {
+      const problemsResponse = await fetch('http://localhost:5001/api/problems', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
