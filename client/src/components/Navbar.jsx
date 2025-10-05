@@ -15,6 +15,13 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
 
+  console.log('🔍 Navbar Debug:', {
+    token: token ? 'present' : 'missing',
+    userType: userType,
+    homeRoute: token ? '/home' : '/',
+    shouldRender: !!token
+  });
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userType');
@@ -45,29 +52,29 @@ const Navbar = () => {
               Home
             </NavLink>
 
-            {/* Volunteer Navigation */}
-            {userType === 'volunteer' && (
+            {/* Show navigation based on user type - NO MIXING */}
+            {userType === 'volunteer' ? (
               <>
-                <NavLink to="/problems" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
-                  Problem List
+                <NavLink to="/vote" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
+                  Vote
                 </NavLink>
                 <NavLink to="/report" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
                   Report a Problem
                 </NavLink>
+                <NavLink to="/rewards" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
+                  Echo Rewards
+                </NavLink>
               </>
-            )}
-
-            {/* NGO Navigation */}
-            {userType === 'ngo' && (
+            ) : userType === 'ngo' ? (
               <>
-                <NavLink to="/volunteer-reports" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
-                  Volunteer Reports
+                <NavLink to="/problems" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
+                  Problems List
                 </NavLink>
-                <NavLink to="/ngo-dashboard" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
-                  NGO Dashboard
+                <NavLink to="/action" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
+                  Action
                 </NavLink>
               </>
-            )}
+            ) : null}
 
             <NavLink to="/about" className="nav-item" style={({ isActive }) => (isActive ? activeStyle : undefined)}>
               About

@@ -8,6 +8,14 @@ const path = require('path');
 const app = express();
 const authRoutes = require('./routes/authRoutes');
 const problemRoutes = require('./routes/problemRoutes');
+const rewardsRoutes = require('./routes/rewardsRoutes');
+
+// Set default JWT_SECRET if not provided
+if (!process.env.JWT_SECRET) {
+  process.env.JWT_SECRET = 'your-super-secret-jwt-key-change-this-in-production';
+  console.log('⚠️ Using default JWT_SECRET. Please set JWT_SECRET environment variable in production.');
+}
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -18,9 +26,13 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/problems', problemRoutes);
+app.use('/api/rewards', rewardsRoutes);
 
 // Database connection
-mongoose.connect(process.env.MONGO_URI)
+const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/urbanecho';
+console.log('Connecting to MongoDB with URI:', mongoURI);
+
+mongoose.connect(mongoURI)
 .then(() => {
   console.log('MongoDB connected successfully');
 })

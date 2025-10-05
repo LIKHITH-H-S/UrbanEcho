@@ -4,10 +4,38 @@ const api = axios.create({
   baseURL: 'http://localhost:5001', // Fixed: Changed from 5000 to 5001 to match server port
 });
 
+// Generic API request function with error handling
+export const apiRequest = async (endpoint, method = 'GET', data = null) => {
+  const token = localStorage.getItem('token');
+  const config = {
+    method,
+    url: `http://localhost:5001/api${endpoint}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  if (data) {
+    config.data = data;
+  }
+
+  try {
+    const response = await axios(config);
+    return response;
+  } catch (error) {
+    console.error('API Request Error:', error.response?.data || error.message);
+    throw error;
+  }
+};
+
 // Fetch all problems
 export const fetchProblems = async (userId = null) => {
   const params = userId ? `?userId=${userId}` : '';
-  const response = await axios.get(`http://localhost:5001/api/problems${params}`);
+  const response = await apiRequest(`/problems${params}`, 'GET');
   return response.data;
 };
 
@@ -31,6 +59,11 @@ export const createProblem = async (problemData) => {
         'Content-Type': 'multipart/form-data'
       },
     });
+    
+    // Update localStorage count when problem is successfully created
+    const currentCount = parseInt(localStorage.getItem('problemsReported') || '0');
+    localStorage.setItem('problemsReported', (currentCount + 1).toString());
+    
     return response.data;
   } else {
     // Regular JSON request for problems without images
@@ -40,6 +73,11 @@ export const createProblem = async (problemData) => {
         'Content-Type': 'application/json'
       },
     });
+    
+    // Update localStorage count when problem is successfully created
+    const currentCount = parseInt(localStorage.getItem('problemsReported') || '0');
+    localStorage.setItem('problemsReported', (currentCount + 1).toString());
+    
     return response.data;
   }
 };
@@ -95,9 +133,19 @@ export const fetchReportById = async (reportId) => {
 
 export const upvoteProblem = async (problemId) => {
   const token = localStorage.getItem('token');
+  console.log('🔍 API - Token being sent:', token ? token.substring(0, 20) + '...' : 'none');
+  console.log('🔍 API - Full token length:', token ? token.length : 0);
+
   const response = await axios.post(`http://localhost:5001/api/problems/${problemId}/upvote`, {}, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
   });
+
+  console.log('🔍 API - Response status:', response.status);
+  console.log('🔍 API - Response data:', response.data);
+
   return response.data;
 };
 

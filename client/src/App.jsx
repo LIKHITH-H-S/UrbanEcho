@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Home from './pages/Home';
@@ -10,19 +10,18 @@ import AuthPage from './pages/AuthPage';
 import ProblemList from './pages/ProblemList';
 import About from './pages/About';
 import LandingPage from './pages/LandingPage';
-import VolunteerReports from './pages/VolunteerReports';
-import NGODashboard from './pages/NGODashboard';
 import Profile from './pages/Profile';
+import Rewards from './pages/Rewards';
+import Action from './pages/Action';
 
 function App() {
   const isAuthenticated = () => !!localStorage.getItem('token');
-  const location = useLocation();
 
-  const hideNavbarPaths = ['/auth', '/login', '/register', '/'];
-  const hideNavbar = hideNavbarPaths.includes(location.pathname);
+  // const hideNavbarPaths = ['/auth', '/login', '/register', '/']; // Not currently used but keeping for future use
   return (
     <>
-      {!hideNavbar && <Navbar />}
+      {/* Render navbar for authenticated users */}
+      {isAuthenticated() && <Navbar />}
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<LandingPage />} />
@@ -31,27 +30,42 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/about" element={<About />} />
 
-        {/* Protected routes */}
+        {/* Protected routes - Available for both user types */}
         <Route
           path="/home"
           element={isAuthenticated() ? <Home /> : <Navigate to="/login" />}
         />
+
+        {/* Problem-related routes */}
         <Route
           path="/problems"
-          element={isAuthenticated() && localStorage.getItem('userType') === 'volunteer' ? <ProblemList /> : <Navigate to="/home" />}
+          element={isAuthenticated() ? <ProblemList /> : <Navigate to="/login" />}
         />
         <Route
+          path="/vote"
+          element={isAuthenticated() ? <ProblemList /> : <Navigate to="/login" />}
+        />
+
+        {/* Volunteer-specific routes */}
+        <Route
           path="/report"
-          element={isAuthenticated() && localStorage.getItem('userType') === 'volunteer' ? <NewProblemForm /> : <Navigate to="/home" />}
+          element={isAuthenticated() ? <NewProblemForm /> : <Navigate to="/login" />}
         />
         <Route
           path="/new"
-          element={isAuthenticated() && localStorage.getItem('userType') === 'volunteer' ? <ProblemForm /> : <Navigate to="/home" />}
+          element={isAuthenticated() ? <ProblemForm /> : <Navigate to="/login" />}
         />
         <Route
-          path="/volunteer-reports"
-          element={isAuthenticated() && localStorage.getItem('userType') === 'ngo' ? <VolunteerReports /> : <Navigate to="/home" />}
+          path="/rewards"
+          element={isAuthenticated() ? <Rewards /> : <Navigate to="/login" />}
         />
+
+        {/* NGO-specific routes */}
+        <Route
+          path="/action"
+          element={isAuthenticated() ? <Action /> : <Navigate to="/login" />}
+        />
+
         <Route
           path="/profile"
           element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />}

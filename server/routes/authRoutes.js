@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 const User = require('../models/User');
+const Problem = require('../models/Problem');
 
 // Register
 router.post('/register', async (req, res) => {
@@ -18,14 +19,10 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'User already exists' });
     }
 
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Create user
+    // Create user (password will be hashed by the pre-save hook in User model)
     const user = new User({
       username,
-      password: hashedPassword,
+      password, // Don't hash here - let the User model handle it
       userType: finalUserType
     });
     await user.save();
@@ -67,6 +64,38 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Server error during login' });
+  }
+});
+
+// Get user statistics
+router.get('/stats/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    console.log('Stats request for userId:', userId);
+
+    // Validate userId format (should be a valid ObjectId)
+    if (!userId || userId === 'test' || userId.length !== 24) {
+      console.log('Invalid userId format:', userId);
+      return res.json({
+        problemsReported: 0,
+        problemsResolved: 0
+      });
+    }
+
+    // Get count of problems reported by this user
+    const problemsReported = await Problem.countDocuments({ reporter: userId });
+    console.log('Problems reported count:', problemsReported);
+
+    // For now, problems resolved is 0 (you can implement this later if needed)
+    const problemsResolved = 0;
+
+    res.json({
+      problemsReported,
+      problemsResolved
+    });
+  } catch (err) {
+    console.error('Error fetching user stats:', err);
+    res.status(500).json({ error: 'Server error while fetching statistics' });
   }
 });
 

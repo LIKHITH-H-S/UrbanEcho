@@ -31,13 +31,13 @@ const Home = () => {
 
         {/* Quick Stats */}
         <section className="quick-stats">
-        <div className="stat">📌 Total Problems Reported: <strong>{problems.length}</strong></div>
-        <div className="stat">✅ Problems Resolved: <strong>{solvedCount}</strong></div>
+        <div className="stat">Total Problems Reported: <strong>{problems.length}</strong></div>
+        <div className="stat">Problems Resolved: <strong>{solvedCount}</strong></div>
       </section>
 
         {/* Recent Problems Preview */}
        <section className="recent-problems">
-        <h2>🆕 Recent Reports</h2>
+        <h2>Recent Reports</h2>
         <ul>
           {problems.length === 0 ? (
             <li>No recent problems available.</li>

@@ -7,9 +7,7 @@ const Profile = () => {
     username: '',
     email: '',
     userType: '',
-    joinDate: '',
-    problemsReported: 0,
-    problemsResolved: 0
+    joinDate: ''
   });
   const navigate = useNavigate();
 
@@ -25,14 +23,17 @@ const Profile = () => {
       return;
     }
 
-    // Set user data
+    // Set user data with current date if no registration date exists
+    const currentDate = new Date().toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric'
+    });
+
     setUser({
       username: username || 'User',
       email: username || 'User', // Just show username, not email format
       userType: userType || 'volunteer',
-      joinDate: registrationDate ? new Date(registrationDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Not available',
-      problemsReported: parseInt(localStorage.getItem('problemsReported') || '0'),
-      problemsResolved: parseInt(localStorage.getItem('problemsResolved') || '0')
+      joinDate: registrationDate ? new Date(registrationDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : currentDate
     });
   }, [navigate]);
 
@@ -52,8 +53,8 @@ const Profile = () => {
           <div className="profile-card">
             <div className="profile-avatar">
               <svg className="avatar-icon-large" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.3"/>
-                <path d="M20 21c0-4.4-3.6-8-8-8s-8 3.6-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none"/>
+                <circle cx="12" cy="8" r="4" stroke="rgba(255, 255, 255, 0.8)" strokeWidth="2" fill="rgba(255, 255, 255, 0.1)"/>
+                <path d="M20 21c0-4.4-3.6-8-8-8s-8 3.6-8 8" stroke="rgba(255, 255, 255, 0.8)" strokeWidth="2" strokeLinecap="round" fill="none"/>
               </svg>
             </div>
 
@@ -80,26 +81,7 @@ const Profile = () => {
             </div>
           </div>
 
-          <div className="stats-card">
-            <h3>Activity Summary</h3>
-            <div className="stats-grid">
-              <div className="stat-item">
-                <div className="stat-number">{user.problemsReported}</div>
-                <div className="stat-label">Problems Reported</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">{user.problemsResolved}</div>
-                <div className="stat-label">Problems Resolved</div>
-              </div>
-              <div className="stat-item">
-                <div className="stat-number">{Math.round((user.problemsResolved / Math.max(user.problemsReported, 1)) * 100)}%</div>
-                <div className="stat-label">Resolution Rate</div>
-              </div>
-            </div>
-          </div>
-
           <div className="actions-card">
-            <h3>Quick Actions</h3>
             <div className="action-buttons">
               <button className="action-btn primary" onClick={() => navigate('/report')}>
                 Report New Issue

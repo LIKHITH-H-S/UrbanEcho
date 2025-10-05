@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema({
     enum: ['volunteer', 'ngo'],
     default: 'volunteer',
   },
+  civicCard: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'CivicCard',
+    default: null
+  }
 });
 
 // Hash password before saving
