@@ -8,7 +8,6 @@ const LandingPage = () => {
     <div className="landing-page">
       <nav className="main-nav">
         <div className="logo-container">
-          <img src="/ue.jpg" alt="UrbanEcho" className="logo" />
           <h1>UrbanEcho</h1>
         </div>
         <div className="auth-actions">

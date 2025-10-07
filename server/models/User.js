@@ -21,6 +21,24 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'CivicCard',
     default: null
+  },
+  coins: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  totalCoinsEarned: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
+  problemsReported: {
+    type: Number,
+    default: 0
+  },
+  problemsResolved: {
+    type: Number,
+    default: 0
   }
 });
 

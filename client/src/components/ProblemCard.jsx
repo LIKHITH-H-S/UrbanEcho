@@ -73,7 +73,8 @@ const ProblemCard = ({ problem, onUpvoted }) => {
 
       <h3>{problem.title}</h3>
       <p>{problem.description}</p>
-      <strong>Category:</strong> {problem.category}
+      <strong>Category:</strong> {problem.category}<br/>
+      <strong>Location:</strong> {problem.location || 'No location specified'}
     </div>
   );
 };

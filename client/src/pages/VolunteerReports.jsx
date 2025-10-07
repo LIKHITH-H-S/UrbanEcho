@@ -1,13 +1,15 @@
 // src/pages/VolunteerReports.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ProblemList.css'; // Reuse existing styles
+import './ProblemList.css';
 
 const VolunteerReports = () => {
-  const navigate = useNavigate();
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [filter, setFilter] = useState('pending'); // 'pending' or 'assigned'
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -30,7 +32,7 @@ const VolunteerReports = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/problems', {
+      const response = await fetch('http://localhost:5001/api/problems/all', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -70,12 +72,10 @@ const VolunteerReports = () => {
         throw new Error('Failed to upvote');
       }
 
-      const result = await response.json();
-
-      // Refresh problems to show updated upvote count
+      // Refresh problems to show updated vote count
       fetchProblems();
     } catch (err) {
-      setError(err.message);
+      console.error('Error upvoting:', err);
     }
   };
 
@@ -100,15 +100,49 @@ const VolunteerReports = () => {
       <div className="problem-list-header">
         <h1>Volunteer Reports</h1>
         <p>Problems reported by volunteers in your community</p>
+
+        {/* Filter Buttons */}
+        <div className="filter-buttons">
+          <button
+            className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
+            onClick={() => setFilter('pending')}
+          >
+            Pending ({problems.filter(p => p.status === 'pending').length})
+          </button>
+          <button
+            className={`filter-btn ${filter === 'assigned' ? 'active' : ''}`}
+            onClick={() => setFilter('assigned')}
+          >
+            Assigned ({problems.filter(p => p.status === 'assigned').length})
+          </button>
+          <button
+            className={`filter-btn ${filter === 'verified' ? 'active' : ''}`}
+            onClick={() => setFilter('verified')}
+          >
+            Verified ({problems.filter(p => p.status === 'verified').length})
+          </button>
+          <button
+            className={`filter-btn ${filter === 'done' ? 'active' : ''}`}
+            onClick={() => setFilter('done')}
+          >
+            Done ({problems.filter(p => p.status === 'done').length})
+          </button>
+        </div>
       </div>
 
       <div className="problems-grid">
-        {problems.length === 0 ? (
-          <div className="no-problems">
-            <p>No volunteer reports available yet.</p>
-          </div>
-        ) : (
-          problems.map((problem) => (
+        {(() => {
+          const filteredProblems = problems.filter(problem => problem.status === filter);
+
+          if (filteredProblems.length === 0) {
+            return (
+              <div className="no-problems">
+                <p>No {filter} problems found.</p>
+              </div>
+            );
+          }
+
+          return filteredProblems.map((problem) => (
             <div key={problem._id} className="problem-card">
               <div className="problem-header">
                 <h3 className="problem-title">{problem.title}</h3>
@@ -147,11 +181,37 @@ const VolunteerReports = () => {
                   >
                     View Details
                   </button>
+
+                  {/* NGO Action Buttons */}
+                  {localStorage.getItem('userType') === 'ngo' && (
+                    <div className="ngo-actions">
+                      {problem.status === 'pending' && (
+                        <button
+                          className="action-btn assign-btn"
+                          onClick={() => handleAssignStaff(problem._id)}
+                        >
+                          Assign Staff
+                        </button>
+                      )}
+
+                      {problem.status === 'assigned' && (
+                        <span className="status-badge assigned">Assigned to Staff</span>
+                      )}
+
+                      {problem.status === 'verified' && (
+                        <span className="status-badge verified">Verified</span>
+                      )}
+
+                      {problem.status === 'sent_to_government' && (
+                        <span className="status-badge sent">Sent to Government</span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           ))
-        )}
+        })()}
       </div>
     </div>
   );

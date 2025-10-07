@@ -193,11 +193,11 @@
 }
 
 .civic-card {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(20px);
-  padding: 1.5rem;
+  padding: 1.2rem 1.6rem 1.6rem; /* reduce top space, keep comfortable sides/bottom */
   color: white;
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.1),
@@ -207,10 +207,14 @@
   min-height: 240px;
   max-height: 280px;
   position: relative;
-  overflow: hidden;
-  aspect-ratio: 1.6 / 1; /* Standard debit card ratio (85.6mm x 53.98mm) */
+  overflow: hidden; /* keep content within the card */
+  aspect-ratio: 1.6 / 1;
   display: flex;
   flex-direction: column;
+  justify-content: space-between; /* distribute header and balance area */
+  transition: all 0.4s ease;
+  z-index: 1;
+  box-sizing: border-box; /* include padding in width */
 }
 
 .civic-card::before {
@@ -241,8 +245,10 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem; /* tighten spacing below header */
   flex-shrink: 0;
+  gap: 0.75rem;
+  flex-wrap: wrap; /* allow wrapping to avoid overflow */
 }
 
 .card-brand h3 {
@@ -255,6 +261,8 @@
 
 .user-info {
   margin-top: 0.5rem;
+  max-width: 65%;
+  overflow: hidden;
 }
 
 .username {
@@ -262,12 +270,18 @@
   font-weight: 600;
   color: rgba(255, 255, 255, 0.95);
   margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* truncate long names */
 }
 
 .user-role {
   font-size: 0.9rem;
   color: rgba(16, 185, 129, 0.9);
   text-transform: capitalize;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .card-number {
@@ -278,10 +292,15 @@
   padding: 0.5rem;
   border-radius: 8px;
   align-self: flex-start;
+  max-width: 35%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .balance-display {
   text-align: center;
+  margin-top: 0.5rem; /* avoid sitting on the bottom border */
 }
 
 .member-since {
@@ -489,6 +508,7 @@
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
   opacity: 0;
   transition: opacity 0.4s ease;
+  pointer-events: none; /* allow clicks to pass through overlay */
 }
 
 .reward-card:hover::before {
@@ -590,6 +610,8 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   white-space: nowrap;
   flex-shrink: 0;
+  position: relative;
+  z-index: 2; /* ensure button stays above decorative overlay */
 }
 
 .redeem-btn:hover:not(:disabled) {

@@ -58,37 +58,35 @@
   font-weight: 400;
 }
 
-.profile-container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
 .profile-card {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(20px);
-  padding: 3rem;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  transition: all 0.4s ease;
   display: flex;
   align-items: center;
   gap: 2rem;
 }
 
-.profile-card:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border-color: rgba(16, 185, 129, 0.3);
+.edit-actions {
+  display: flex;
+  gap: 1rem;
 }
 
-.profile-avatar {
-  flex-shrink: 0;
+.user-type-select {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  color: white;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  backdrop-filter: blur(10px);
+}
+
+.user-type-select:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+}
+
+.profile-actions {
+  margin-top: 1.5rem;
 }
 
 .avatar-icon-large {

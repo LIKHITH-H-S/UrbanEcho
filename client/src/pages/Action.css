@@ -202,17 +202,10 @@
     0 8px 32px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition: all 0.4s ease;
-  display: flex;
-  flex-direction: column;
-  min-height: 400px;
-}
-
-.problem-card:hover {
-  transform: translateY(-4px);
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border-color: rgba(16, 185, 129, 0.3);
+  position: relative;
+  overflow: hidden;
+  color: white;
+  cursor: default; /* Ensure card itself doesn't interfere with button clicks */
 }
 
 .problem-image {
@@ -308,10 +301,16 @@
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-.status-badge.done {
-  background: rgba(99, 102, 241, 0.2);
-  color: #6366f1;
-  border: 1px solid rgba(99, 102, 241, 0.3);
+.status-badge.assigned {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.status-badge.sent {
+  background: rgba(139, 92, 246, 0.2);
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, 0.3);
 }
 
 .action-buttons {
@@ -319,8 +318,8 @@
   gap: 0.5rem;
 }
 
-.verify-btn, .submit-btn {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+.assign-staff-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
   border: none;
   padding: 0.75rem 1rem;
@@ -330,19 +329,80 @@
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
-  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 3px 12px rgba(59, 130, 246, 0.3);
 }
 
-.verify-btn:hover, .submit-btn:hover {
+.mark-done-btn {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer !important;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 3px 12px rgba(16, 185, 129, 0.3);
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 10;
+}
+
+.mark-done-btn:hover {
   background: linear-gradient(135deg, #059669 0%, #047857 100%);
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
-.completed-text {
-  color: #10b981;
+.mark-done-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.mark-done-btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed !important;
+  transform: none;
+}
+
+.verify-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 3px 12px rgba(245, 158, 11, 0.3);
+}
+
+.verify-btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.verify-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.assigned-text, .verified-text, .sent-text {
+  color: #3b82f6;
   font-weight: 600;
   font-size: 0.9rem;
+}
+
+.verified-text {
+  color: #10b981;
+}
+
+.sent-text {
+  color: #8b5cf6;
 }
 
 .no-problems {
@@ -448,7 +508,7 @@
     height: 120px;
   }
 
-  .verify-btn, .submit-btn {
+  .assign-staff-btn {
     padding: 0.6rem 0.8rem;
     font-size: 0.8rem;
   }

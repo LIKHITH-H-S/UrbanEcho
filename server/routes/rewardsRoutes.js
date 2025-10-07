@@ -174,8 +174,8 @@ router.post('/redeem/:rewardId', verifyToken, async (req, res) => {
       }
     });
 
-    // Generate unique redemption code
-    const redemptionCode = new RedemptionCode({
+    // Generate unique redemption code (include QR payload)
+    const redemptionPayload = {
       code: RedemptionCode.generateCode(),
       user: req.user.userId,
       reward: reward._id,
@@ -187,7 +187,17 @@ router.post('/redeem/:rewardId', verifyToken, async (req, res) => {
         coinCost: reward.coinCost,
         originalBalance: civicCard.balance + reward.coinCost
       }
+    };
+    // Create a simple QR data string the client can turn into a QR code
+    redemptionPayload.qrCodeData = JSON.stringify({
+      code: redemptionPayload.code,
+      rewardId: String(reward._id),
+      userId: String(req.user.userId),
+      merchant: reward.merchant,
+      expiresAt: redemptionPayload.expiresAt
     });
+
+    const redemptionCode = new RedemptionCode(redemptionPayload);
 
     // Save all changes
     await Promise.all([

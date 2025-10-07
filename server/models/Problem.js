@@ -11,8 +11,17 @@ const problemSchema = new mongoose.Schema({
   votesCount: { type: Number, default: 0 },
   status: {
     type: String,
-    enum: ['pending', 'verified', 'done'],
+    enum: ['pending', 'assigned', 'verified', 'sent_to_government', 'done'],
     default: 'pending'
+  },
+  assignedTo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    default: null
+  },
+  assignedAt: {
+    type: Date,
+    default: null
   },
   verifiedBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -21,6 +30,10 @@ const problemSchema = new mongoose.Schema({
   },
   verifiedAt: {
     type: Date,
+    default: null
+  },
+  verificationImage: {
+    type: String,
     default: null
   },
   submittedToGovernment: {

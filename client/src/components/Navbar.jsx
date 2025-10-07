@@ -40,9 +40,6 @@ const Navbar = () => {
       <nav className="navbar">
         <div className="navbar-container">
           <div className="logo-section">
-            <a href={homeRoute} className="logo" aria-label="Home">
-              <img src="/ue.jpg" alt="UrbanEcho Logo" />
-            </a>
             <a href={homeRoute} className="brand-title" aria-label="Home">
               UrbanEcho
             </a>

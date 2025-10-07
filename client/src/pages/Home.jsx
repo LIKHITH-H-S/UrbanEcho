@@ -13,7 +13,7 @@ const Home = () => {
     fetchProblems()
       .then(data => {
         setProblems(data.slice(0, 3)); // for preview
-        const solved = data.filter(problem => problem.status === 'Resolved' || problem.status === 'Solved');
+        const solved = data.filter(problem => problem.status === 'done');
         setSolvedCount(solved.length);
       })
       .catch(err => console.error("Error fetching problems:", err));

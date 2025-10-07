@@ -6,10 +6,11 @@ const Rewards = () => {
   const [activeTab, setActiveTab] = useState('rewards');
   const [civicCard, setCivicCard] = useState(null);
   const [transactions, setTransactions] = useState([]);
-  const [rewards, setRewards] = useState([]);
+  const [vouchers, setVouchers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [newBadges, setNewBadges] = useState([]);
+  const [rewards, setRewards] = useState([]);
 
   const token = localStorage.getItem('token');
 
@@ -31,12 +32,12 @@ const Rewards = () => {
 
       const headers = { Authorization: `Bearer ${token}` };
 
-      const [cardRes, transRes, rewardsRes] = await Promise.all([
+      const [cardRes, transRes, vouchersRes, rewardsRes] = await Promise.all([
         axios.get('http://localhost:5001/api/rewards/civic-card', { headers }),
         axios.get('http://localhost:5001/api/rewards/transactions?limit=10', { headers }),
+        axios.get('http://localhost:5001/api/rewards/my-codes', { headers }),
         axios.get('http://localhost:5001/api/rewards/rewards')
       ]);
-
       console.log('📊 Rewards data received:', rewardsRes.data.rewards.length, 'rewards');
 
       setCivicCard(cardRes.data);
@@ -50,6 +51,8 @@ const Rewards = () => {
       }
 
       console.log('✅ State updated with', rewardsRes.data.rewards.length, 'rewards');
+      console.log('💳 Civic card data:', cardRes.data);
+      console.log('💰 Balance from server:', cardRes.data?.balance);
     } catch (err) {
       console.error('Error fetching rewards data:', err);
       if (err.response?.status === 404) {
@@ -72,19 +75,52 @@ const Rewards = () => {
         return;
       }
 
+      console.log('🎫 REDEEMING REWARD:', rewardId);
+      console.log('💰 Current balance:', civicCard?.balance);
+      console.log('🏷️ Civic card exists:', !!civicCard);
+
       const response = await axios.post(`http://localhost:5001/api/rewards/redeem/${rewardId}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
       // Show redemption success with voucher details
-      const { redemptionCode } = response.data;
+      const { redemptionCode, reward, newBalance, transactionId } = response.data;
       showRedemptionSuccess(redemptionCode);
 
-      // Refresh data after successful redemption
-      fetchDashboardData();
+      // Optimistically update UI: balance, vouchers, rewards, and switch tab
+      if (typeof newBalance === 'number') {
+        setCivicCard(prev => prev ? {
+          ...prev,
+          balance: newBalance,
+          totalSpent: (prev.totalSpent || 0) + (reward?.coinsSpent || 0)
+        } : prev);
+      }
+
+      // Remove redeemed reward from the list
+      setRewards(prev => prev.filter(r => r._id !== rewardId));
+
+      // Add optimistic transaction entry and switch to transactions tab
+      if (reward?.coinsSpent) {
+        setTransactions(prev => [
+          {
+            type: 'spent',
+            amount: reward.coinsSpent,
+            description: `Redeemed: ${reward.name}`,
+            createdAt: new Date().toISOString(),
+            _id: transactionId || Math.random().toString(36).slice(2)
+          },
+          ...prev
+        ]);
+      }
+
+      setActiveTab('transactions');
     } catch (err) {
-      console.error('Error redeeming reward:', err);
-      alert(err.response?.data?.error || 'Failed to redeem reward');
+      console.error('❌ Error redeeming reward:', err);
+      if (err.response?.status === 400) {
+        alert(err.response.data.error || 'Cannot redeem this reward');
+      } else {
+        alert('Failed to redeem reward. Please try again.');
+      }
     }
   };
 
@@ -160,7 +196,68 @@ const Rewards = () => {
     `);
   };
 
+  const handleVoucherRedemption = async (voucherCode) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Authentication required');
+        return;
+      }
 
+      console.log('🎫 REDEEMING VOUCHER:', voucherCode);
+
+      // Show voucher details in a popup
+      showVoucherDetails(voucherCode);
+
+      // Refresh data after voucher redemption
+      fetchDashboardData();
+    } catch (err) {
+      console.error('❌ Error redeeming voucher:', err);
+      alert('Failed to redeem voucher. Please try again.');
+    }
+  };
+
+  const showVoucherDetails = (voucherCode) => {
+    const voucherWindow = window.open('', '_blank', 'width=400,height=600');
+    voucherWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Voucher Details</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+          }
+          .voucher {
+            background: white;
+            color: #333;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+          }
+          .code {
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: #10b981;
+            margin: 10px 0;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="voucher">
+          <h2>🎫 Voucher Redeemed</h2>
+          <p>Your voucher code <span class="code">${voucherCode}</span> has been used!</p>
+        </div>
+      </body>
+      </html>
+    `);
+  };
   if (loading) {
     return (
       <div className="rewards-page">
@@ -223,14 +320,15 @@ const Rewards = () => {
             My Echo Card
           </button>
           <button
-            className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
+            className={`tab-btn ${activeTab === 'transactions' ? 'active' : ''}`}
             onClick={() => {
-              console.log('🖱️ Transaction History tab clicked');
-              setActiveTab('history');
+              console.log('🖱️ Transactions tab clicked');
+              setActiveTab('transactions');
             }}
           >
-            Transaction History
+            Transactions
           </button>
+          
         </div>
 
         <div className="rewards-content">
@@ -340,11 +438,33 @@ const Rewards = () => {
                         }
                       </div>
                       <button
-                        className={`redeem-btn ${civicCard?.balance >= reward.coinCost ? 'enabled' : 'disabled'}`}
-                        onClick={() => handleRedeemReward(reward._id)}
-                        disabled={civicCard?.balance < reward.coinCost}
+                        type="button"
+                        className={`redeem-btn ${civicCard && civicCard.balance >= reward.coinCost ? 'enabled' : 'disabled'}`}
+                        style={{ pointerEvents: 'auto' }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          console.log('🖱️ Redeem button clicked for reward:', reward.name);
+                          console.log('💰 Current balance:', civicCard?.balance);
+                          console.log('💰 Required cost:', reward.coinCost);
+                          console.log('✅ Can afford?', civicCard && civicCard.balance >= reward.coinCost);
+                          if (civicCard && civicCard.balance >= reward.coinCost) {
+                            handleRedeemReward(reward._id);
+                          } else {
+                            console.log('❌ Cannot redeem - insufficient balance or no civic card');
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (civicCard && civicCard.balance >= reward.coinCost) {
+                              handleRedeemReward(reward._id);
+                            }
+                          }
+                        }}
                       >
-                        {civicCard?.balance >= reward.coinCost ? 'Redeem' : 'Insufficient Coins'}
+                        {civicCard && civicCard.balance >= reward.coinCost ? 'Redeem' : 'Insufficient Coins'}
                       </button>
                     </div>
                   </div>
@@ -358,39 +478,38 @@ const Rewards = () => {
             </div>
           )}
 
-
-          {activeTab === 'history' && (
+          {activeTab === 'transactions' && (
             <div className="transactions-section">
-              <div className="transactions-list">
-                {transactions.map(transaction => (
-                  <div key={transaction._id} className={`transaction-item ${transaction.type}`}>
-                    <div className="transaction-icon">
-                      {transaction.type === 'earned' ? '💰' : '🛒'}
-                    </div>
-                    <div className="transaction-details">
-                      <div className="transaction-description">{transaction.description}</div>
-                      <div className="transaction-date">
-                        {new Date(transaction.createdAt).toLocaleDateString()}
+              <div className="rewards-header-info">
+                <h2>Recent Transactions</h2>
+                <p className="rewards-count">Last {transactions.length} activities</p>
+              </div>
+              {transactions.length > 0 ? (
+                <div className="transactions-list">
+                  {transactions.map((t, idx) => (
+                    <div key={idx} className="transaction-item">
+                      <div className="transaction-icon">{t.type === 'spent' ? '💸' : '💰'}</div>
+                      <div className="transaction-details">
+                        <div className="transaction-description">{t.description || 'Transaction'}</div>
+                        <div className="transaction-date">{new Date(t.createdAt || Date.now()).toLocaleString()}</div>
+                      </div>
+                      <div className={`transaction-amount ${t.type}`}>
+                        {t.type === 'spent' ? '-' : '+'}{t.amount}
                       </div>
                     </div>
-                    <div className={`transaction-amount ${transaction.type}`}>
-                      {transaction.type === 'earned' ? '+' : '-'}{transaction.amount}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {transactions.length === 0 && (
-                <div className="no-transactions">
-                  <p>No transactions yet. Start earning civic coins by reporting problems!</p>
+                  ))}
                 </div>
+              ) : (
+                <div className="no-transactions">No recent activity yet.</div>
               )}
             </div>
           )}
+
+          
         </div>
       </div>
     </div>
   );
 };
-
 
 export default Rewards;
