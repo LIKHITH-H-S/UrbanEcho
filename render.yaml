@@ -8,6 +8,6 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGO_URI
-        fromSecret: mongodb-atlas-uri
+        value: mongodb+srv://urbanecho_user:xxLpi1b6RIDWLrf6@urbanecho.e1i9yma.mongodb.net/urbanecho?retryWrites=true&w=majority&appName=UrbanEcho
       - key: JWT_SECRET
-        fromSecret: jwt-secret
+        value: urbanecho_production_secret_key_2024_change_this_in_production
