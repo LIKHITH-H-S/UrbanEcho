@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: urbanecho-backend
+    runtime: node
+    buildCommand: cd server && npm install
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        fromSecret: mongodb-atlas-uri
+      - key: JWT_SECRET
+        fromSecret: jwt-secret
