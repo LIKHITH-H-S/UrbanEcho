@@ -33,16 +33,18 @@ const Rewards = () => {
       const headers = { Authorization: `Bearer ${token}` };
 
       const [cardRes, transRes, vouchersRes, rewardsRes] = await Promise.all([
-        axios.get('http://localhost:5001/api/rewards/civic-card', { headers }),
-        axios.get('http://localhost:5001/api/rewards/transactions?limit=10', { headers }),
-        axios.get('http://localhost:5001/api/rewards/my-codes', { headers }),
-        axios.get('http://localhost:5001/api/rewards/rewards')
+        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/rewards/civic-card`, { headers }),
+        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/rewards/transactions?limit=10`, { headers }),
+        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/rewards/my-codes`, { headers }),
+        axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/rewards/rewards`)
       ]);
-      console.log('📊 Rewards data received:', rewardsRes.data.rewards.length, 'rewards');
+
+      const rewardsList = Array.isArray(rewardsRes?.data?.rewards) ? rewardsRes.data.rewards : [];
+      console.log('📊 Rewards data received:', rewardsList.length, 'rewards');
 
       setCivicCard(cardRes.data);
       setTransactions(transRes.data.transactions || []);
-      setRewards(rewardsRes.data.rewards || []);
+      setRewards(rewardsList);
       
       // Show new badges notification
       if (cardRes.data.newBadges && cardRes.data.newBadges.length > 0) {
@@ -50,7 +52,7 @@ const Rewards = () => {
         setTimeout(() => setNewBadges([]), 5000); // Hide after 5 seconds
       }
 
-      console.log('✅ State updated with', rewardsRes.data.rewards.length, 'rewards');
+      console.log('✅ State updated with', rewardsList.length, 'rewards');
       console.log('💳 Civic card data:', cardRes.data);
       console.log('💰 Balance from server:', cardRes.data?.balance);
     } catch (err) {
@@ -79,7 +81,7 @@ const Rewards = () => {
       console.log('💰 Current balance:', civicCard?.balance);
       console.log('🏷️ Civic card exists:', !!civicCard);
 
-      const response = await axios.post(`http://localhost:5001/api/rewards/redeem/${rewardId}`, {}, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/rewards/redeem/${rewardId}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

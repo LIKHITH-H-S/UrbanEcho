@@ -23,7 +23,7 @@ const Action = () => {
       if (!token) {
         fetchProblems();
       } else {
-        const response = await fetch('http://localhost:5001/api/problems', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/problems`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -62,7 +62,7 @@ const Action = () => {
   const fetchProblems = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5001/api/problems/all', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/problems/all`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -123,7 +123,7 @@ const Action = () => {
       // Optional: Try to update server in background
       const token = localStorage.getItem('token');
       if (token) {
-        fetch(`http://localhost:5001/api/problems/${problemId}/assign`, {
+        fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/problems/${problemId}/assign`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -221,7 +221,7 @@ const Action = () => {
 
         try {
           console.log('🔗 Uploading verification image to server...');
-          const response = await fetch(`http://localhost:5001/api/problems/${problemId}/verify`, {
+          const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/problems/${problemId}/verify`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`
@@ -328,7 +328,7 @@ const Action = () => {
       // For verified problems, just submit to government (mark as done)
       // No need to verify again since they are already verified
       console.log('📡 Sending request to mark as done...');
-      const submitResponse = await fetch(`http://localhost:5001/api/problems/${problemId}/submit`, {
+      const submitResponse = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/problems/${problemId}/submit`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -491,7 +491,7 @@ const Action = () => {
                   <div key={problem._id} className="problem-card">
                     {problem.image && (
                       <div className="problem-image">
-                        <img src={`http://localhost:5001${problem.image}`} alt={problem.title} />
+                        <img src={`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}${problem.image}`} alt={problem.title} />
                       </div>
                     )}
 

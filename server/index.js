@@ -9,6 +9,7 @@ const app = express();
 const authRoutes = require('./routes/authRoutes');
 const problemRoutes = require('./routes/problemRoutes');
 const rewardsRoutes = require('./routes/rewardsRoutes');
+const { seedRewards } = require('./seedRewards');
 
 // Set default JWT_SECRET if not provided
 if (!process.env.JWT_SECRET) {
@@ -16,7 +17,15 @@ if (!process.env.JWT_SECRET) {
   console.log('⚠️ Using default JWT_SECRET. Please set JWT_SECRET environment variable in production.');
 }
 
-app.use(cors());
+// Allow localhost from any port (3000, 3001, etc.) for local dev
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowed = !origin || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+    callback(null, allowed ? origin || true : false);
+  },
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
@@ -33,8 +42,9 @@ const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/urbanecho';
 console.log('Connecting to MongoDB with URI:', mongoURI);
 
 mongoose.connect(mongoURI)
-.then(() => {
+.then(async () => {
   console.log('MongoDB connected successfully');
+  await seedRewards();
 })
 .catch((err) => {
   console.error('MongoDB connection error:', err);

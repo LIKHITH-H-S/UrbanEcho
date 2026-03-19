@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import './AuthPage.css';
 import './LoginPage.css'; // Add this import for toggle styles
 import { login } from '../utils/api';
-import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [userType, setUserType] = useState('volunteer'); // 'volunteer' or 'ngo'
@@ -13,7 +12,6 @@ const LoginPage = () => {
     password: ''
   });
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -32,25 +30,30 @@ const LoginPage = () => {
         userType: userType
       });
 
-      // Save the token to localStorage
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userType', userType);
-      localStorage.setItem('username', formData.username);
-
-      // Store user ID if provided in response
-      if (response.data.userId) {
-        localStorage.setItem('userId', response.data.userId);
+      const data = response?.data;
+      if (!data?.token) {
+        setError('Login failed: no token received.');
+        return;
       }
 
-      // Redirect based on user type
+      // Save the token and user info to localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userType', data.userType || userType);
+      localStorage.setItem('username', data.username || formData.username);
+      if (data.userId) {
+        localStorage.setItem('userId', typeof data.userId === 'string' ? data.userId : String(data.userId));
+      }
+
+      // Full page redirect so the app reads auth from localStorage reliably
       if (userType === 'ngo') {
-        navigate('/problems'); // NGO volunteers go to problem management
+        window.location.href = '/problems';
       } else {
-        navigate('/home'); // Regular users go to home
+        window.location.href = '/home';
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError(err.response?.data?.error || err.response?.data?.message || 'Login failed. Please check your credentials.');
+      const message = err.response?.data?.error || err.response?.data?.message || err.message || 'Login failed. Please check your credentials.';
+      setError(message);
     }
   };
 
@@ -109,7 +112,7 @@ const LoginPage = () => {
               />
             </div>
 
-            {error && <div className="error-message">{error}</div>}
+            {error && <div className="error-message" role="alert">{error}</div>}
 
             <button type="submit" className="auth-button">
               Sign In as {userType === 'volunteer' ? 'Volunteer' : 'NGO'}

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5001', // Fixed: Changed from 5000 to 5001 to match server port
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5001',
 });
 
 // Generic API request function with error handling
@@ -9,7 +9,7 @@ export const apiRequest = async (endpoint, method = 'GET', data = null) => {
   const token = localStorage.getItem('token');
   const config = {
     method,
-    url: `http://localhost:5001/api${endpoint}`,
+    url: `${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api${endpoint}`,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -53,7 +53,7 @@ export const createProblem = async (problemData) => {
     formData.append('location', problemData.location);
     formData.append('image', problemData.image);
 
-    const response = await axios.post('http://localhost:5001/api/problems', formData, {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/problems`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data'
@@ -67,7 +67,7 @@ export const createProblem = async (problemData) => {
     return response.data;
   } else {
     // Regular JSON request for problems without images
-    const response = await axios.post('http://localhost:5001/api/problems', problemData, {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/problems`, problemData, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -83,7 +83,7 @@ export const createProblem = async (problemData) => {
 };
 export const register = async (userData) => {
   try {
-    const response = await axios.post('http://localhost:5001/api/auth/register', userData, {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/auth/register`, userData, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -107,7 +107,7 @@ export const register = async (userData) => {
 
 export const login = async (credentials) => {
   try {
-    const response = await axios.post('http://localhost:5001/api/auth/login', credentials, {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/auth/login`, credentials, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -136,7 +136,7 @@ export const upvoteProblem = async (problemId) => {
   console.log('🔍 API - Token being sent:', token ? token.substring(0, 20) + '...' : 'none');
   console.log('🔍 API - Full token length:', token ? token.length : 0);
 
-  const response = await axios.post(`http://localhost:5001/api/problems/${problemId}/upvote`, {}, {
+  const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:5001'}/api/problems/${problemId}/upvote`, {}, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
